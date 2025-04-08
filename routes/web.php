@@ -17,6 +17,14 @@ Route::get('/login', function () {
 
 Route::post('/login', [AuthController::class, 'login']);
 
+// đăng ký
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
+
+Route::post('/register', [AuthController::class, 'register']);
+
+
 //logout
 Route::post('/logout', function () {
     Auth::logout();
@@ -25,9 +33,7 @@ Route::post('/logout', function () {
 
 // phân quyền cho user
 Route::middleware('client')->group(function () {
-    Route::get('/list', function () {
-        return view('client.list');
-    });
+    Route::get('/list', [ProductController::class, 'listClient']);
 });
 
 // phân quyền cho admin

@@ -38,7 +38,7 @@ class CategoryController extends Controller
     {
         //querybuider
         Category::create($request->validated());
-        return redirect()->route('admin.categories.index')->with('success', 'Thêm thành công');
+        return redirect()->route('categories.index')->with('success', 'ThêmThêm thành công');
     }
 
     /**
@@ -69,7 +69,7 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, string $id)
     {
         Category::query()->where('id', $id)->update($request->validated());
-        return redirect()->route('admin.categories.index')->with('success', 'Cập nhật thành công');
+        return redirect()->route('categories.index')->with('success', 'Cập nhật thành công');
     }
 
     /**
@@ -78,6 +78,6 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         Category::query()->where('id', $id)->delete();
-        return redirect()->route('admin.categories.index')->with('success', 'Xóa thành công');
+        return redirect()->route('categories.index')->with('success', 'Xóa thành công');
     }
 }

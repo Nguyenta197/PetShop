@@ -25,6 +25,7 @@ class ProductRequest extends FormRequest
             'name' => 'required|string|max:255',
             'price' => 'required|integer',
             'quantity' => 'required|integer',
+            'category_id' => 'required|exists:categories,id',
             'description' => 'required|string',
             'status' => 'required|boolean',
         ];
@@ -40,6 +41,8 @@ class ProductRequest extends FormRequest
             'price.bigInteger' => 'Giá sản phẩm phải là số nguyên',
             'quantity.required' => 'Số lượng sản phẩm không được để trống',
             'quantity.integer' => 'Số lượng sản phẩm phải là số nguyên',
+            'category_id.required' => 'Vui lòng chọn danh mục',
+            'category_id.exists' => 'Danh mục không hợp lệ',
             'description.required' => 'Mô tả sản phẩm không được để trống',
             'description.string' => 'Mô tả sản phẩm phải là chuỗi',
             'status.required' => 'Trạng thái sản phẩm không được để trống',

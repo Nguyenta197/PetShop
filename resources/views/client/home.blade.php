@@ -1,27 +1,47 @@
-@if (session('error'))
-    <div class="alert alert-danger">{{ session('error') }}</div>
-@endif
-
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang chủ</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Trang Chủ | Pet Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-
 <body>
-    <div class="container text-center mt-5">
-        <h1 class="text-primary">Xin chào, đây là trang chủ!</h1>
-        <p class="lead">Bạn phải đăng nhập thì mới mua hàng được</p>
-        <a href="/login" class="btn btn-primary">Đăng nhập</a>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-    </script>
-</body>
 
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="#">🐾 Pet Shop</a>
+        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a href="/" class="nav-link">Trang Chủ</a></li>
+                <li class="nav-item"><a href="/list" class="nav-link">Sản Phẩm</a></li>
+                @auth
+                    <li class="nav-item"><form method="POST" action="{{ route('logout') }}">@csrf <button class="btn btn-link nav-link" type="submit">Đăng xuất</button></form></li>
+                @else
+                    <li class="nav-item"><a href="/login" class="nav-link">Đăng nhập</a></li>
+                @endauth
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Banner -->
+<div class="container mt-4">
+    <div class="text-center">
+        <h1 class="display-4">Chào mừng đến với Pet Shop!</h1>
+        <p class="lead">Nơi bạn tìm thấy người bạn bốn chân tuyệt vời nhất 🐶🐱</p>
+        <a href="/list" class="btn btn-primary btn-lg">Khám phá thú cưng</a>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-light text-center p-3 mt-5">
+    &copy; {{ date('Y') }} Pet Shop. All rights reserved.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

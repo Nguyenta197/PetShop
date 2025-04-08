@@ -21,6 +21,12 @@ class ProductController extends Controller
         return view('admin.products.index', compact('products'));
     }
 
+    public function listClient()
+    {
+        $products = Product::all();
+        return view('client.list', compact('products'));
+    }
+
 
     public function create()
     {
