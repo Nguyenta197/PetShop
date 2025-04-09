@@ -20,13 +20,79 @@ class ProductController extends Controller
         $products = $query->paginate(10);
         return view('admin.products.index', compact('products'));
     }
+    public function home(Request $request)
+{
+    $query = Product::query();
 
-    public function listClient()
+    // Tìm kiếm
+    if ($request->filled('keyword')) {
+        $query->where('name', 'like', '%' . $request->keyword . '%');
+    }
+
+    // Lọc theo giá
+    if ($request->filled('price_filter')) {
+        switch ($request->price_filter) {
+            case 'under_1m':
+                $query->where('price', '<', 1000000);
+                break;
+            case '1m_3m':
+                $query->whereBetween('price', [1000000, 3000000]);
+                break;
+            case 'over_3m':
+                $query->where('price', '>', 3000000);
+                break;
+        }
+    }
+
+    $products = $query->paginate(6);
+    return view('client.home', compact('products'));
+}
+
+
+    public function listClient(Request $request)
     {
-        $products = Product::all();
+        $query = Product::query();
+
+        // Tìm kiếm theo tên sản phẩm
+        if ($request->filled('keyword')) {
+            $query->where('name', 'like', '%' . $request->keyword . '%');
+        }
+
+        // Lọc theo khoảng giá
+        if ($request->filled('price_filter')) {
+            switch ($request->price_filter) {
+                case 'under_1m':
+                    $query->where('price', '<', 1000000);
+                    break;
+                case '1m_3m':
+                    $query->whereBetween('price', [1000000, 3000000]);
+                    break;
+                case 'over_3m':
+                    $query->where('price', '>', 3000000);
+                    break;
+            }
+        }
+
+        $products = $query->paginate(6)->withQueryString(); // Giữ query khi phân trang
+
         return view('client.list', compact('products'));
     }
 
+
+
+
+    public function clientDetail($id)
+    {
+        $product = Product::findOrFail($id);
+
+        $relatedProducts = Product::where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('client.detail', compact('product', 'relatedProducts'));
+    }
 
     public function create()
     {
@@ -37,13 +103,12 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $data = $request->validated();
-        if($request->hasFile('image')) {
-            $data['image'] = Storage::putFile('public/products', $request->image);
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('products', 'public');
         }
         Product::create($data);
-        return redirect()->route('products.index')->with('success', 'Product created successfully');
+        return redirect()->route('products.index')->with('success', 'Thêm sản phẩm thành công');
     }
-
     public function edit(Product $product)
     {
         $products = Product::query()->where('id', $product->id)->first();
@@ -54,8 +119,8 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product)
     {
         $data = $request->validated();
-        if($request->hasFile('image')) {
-            $data['image'] = Storage::putFile('public/products', $request->image);
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('products', 'public');
         }
         $product->update($data);
         return redirect()->route('products.index')->with('success', 'Product updated successfully');

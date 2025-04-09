@@ -1,20 +1,18 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // trang chủ
-Route::get('/', function () {
-    return view('client.home');
-});
+Route::get('/', [ProductController::class, 'home'])->name('client.products.home');
 // login
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
-
 Route::post('/login', [AuthController::class, 'login']);
 
 // đăng ký
@@ -33,7 +31,13 @@ Route::post('/logout', function () {
 
 // phân quyền cho user
 Route::middleware('client')->group(function () {
-    Route::get('/list', [ProductController::class, 'listClient']);
+    // Route::get('/', [ProductController::class, 'home'])->name('client.products');
+    Route::get('/list', [ProductController::class, 'listClient'])->name('client.products.list');
+    Route::get('/detail/{id}', [ProductController::class, 'clientDetail'])->name('client.products.detail');
+    Route::get('/cart', [CartController::class, 'index'])->name('client.cart.index');
+    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('client.cart.add');
+    Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('client.cart.update');
+    Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('client.cart.remove');
 });
 
 // phân quyền cho admin

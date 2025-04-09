@@ -1,47 +1,49 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Trang Chủ | Pet Shop</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+@extends('client.layouts.app')
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <div class="container">
-        <a class="navbar-brand" href="#">🐾 Pet Shop</a>
-        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a href="/" class="nav-link">Trang Chủ</a></li>
-                <li class="nav-item"><a href="/list" class="nav-link">Sản Phẩm</a></li>
-                @auth
-                    <li class="nav-item"><form method="POST" action="{{ route('logout') }}">@csrf <button class="btn btn-link nav-link" type="submit">Đăng xuất</button></form></li>
-                @else
-                    <li class="nav-item"><a href="/login" class="nav-link">Đăng nhập</a></li>
-                @endauth
-            </ul>
+@section('content')
+<div class="container">
+    <h2 class="my-4">Danh sách thú cưng</h2>
+
+    {{-- Form tìm kiếm và lọc --}}
+    <form method="GET" action="{{ route('client.products.home') }}" class="row mb-4">
+        <div class="col-md-4 mb-2">
+            <input type="text" name="keyword" class="form-control" placeholder="Tìm theo tên"
+                   value="{{ request('keyword') }}">
         </div>
-    </div>
-</nav>
+        <div class="col-md-4 mb-2">
+            <select name="price_filter" class="form-select">
+                <option value="">-- Lọc theo giá --</option>
+                <option value="under_1m" {{ request('price_filter') == 'under_1m' ? 'selected' : '' }}>Dưới 1 triệu</option>
+                <option value="1m_3m" {{ request('price_filter') == '1m_3m' ? 'selected' : '' }}>Từ 1 - 3 triệu</option>
+                <option value="over_3m" {{ request('price_filter') == 'over_3m' ? 'selected' : '' }}>Trên 3 triệu</option>
+            </select>
+        </div>
+        <div class="col-md-4 mb-2">
+            <button type="submit" class="btn btn-primary w-100">Tìm kiếm / Lọc</button>
+        </div>
+    </form>
 
-<!-- Banner -->
-<div class="container mt-4">
-    <div class="text-center">
-        <h1 class="display-4">Chào mừng đến với Pet Shop!</h1>
-        <p class="lead">Nơi bạn tìm thấy người bạn bốn chân tuyệt vời nhất 🐶🐱</p>
-        <a href="/list" class="btn btn-primary btn-lg">Khám phá thú cưng</a>
+    {{-- Danh sách sản phẩm --}}
+    <div class="row">
+        @forelse ($products as $product)
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $product->name }}</h5>
+                        <p class="card-text">Giá: {{ number_format($product->price) }} VND</p>
+                        <a href="{{ route('client.products.detail', $product->id) }}" class="btn btn-outline-primary">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <p>Không có sản phẩm nào phù hợp.</p>
+        @endforelse
+    </div>
+
+    {{-- Phân trang --}}
+    <div class="mt-4">
+        {{ $products->appends(request()->query())->links() }}
     </div>
 </div>
-
-<!-- Footer -->
-<footer class="bg-light text-center p-3 mt-5">
-    &copy; {{ date('Y') }} Pet Shop. All rights reserved.
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+@endsection
