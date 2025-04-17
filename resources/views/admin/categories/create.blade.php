@@ -30,13 +30,15 @@
                 <div class="mb-3">
                     <label class="form-label">Trạng thái</label>
                     <select name="status" class="form-control">
-                        <option value="1">Hoạt động</option>
-                        <option value="0">Tạm dừng</option>
+                        <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Hoạt động</option>
+                        <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Tạm dừng</option>
                     </select>
                     @error('status')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
+
+
                 <button type="submit" class="btn btn-success">Thêm danh mục</button>
             </form>
         </div>

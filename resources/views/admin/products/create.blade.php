@@ -21,7 +21,7 @@
             <form action="{{route('products.store')}}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
-                    <label class="form-label">Tên danh mục</label>
+                    <label class="form-label">Tên sản phẩm</label>
                     <input type="text" name="name" class="form-control">
                     @error('name')
                         <div class="text-danger">{{ $message }}</div>

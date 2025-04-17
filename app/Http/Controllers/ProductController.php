@@ -78,9 +78,6 @@ class ProductController extends Controller
         return view('client.list', compact('products'));
     }
 
-
-
-
     public function clientDetail($id)
     {
         $product = Product::findOrFail($id);
@@ -93,27 +90,44 @@ class ProductController extends Controller
 
         return view('client.detail', compact('product', 'relatedProducts'));
     }
+    // Trong CartController
+    
 
     public function create()
     {
-        $categories = Category::query()->where('status',1)->get();
+        // Lấy tất cả danh mục (kể cả đang dừng hoạt động)
+        $categories = Category::all();
+
         return view('admin.products.create', compact('categories'));
     }
 
-    public function store(ProductRequest $request)
+    // Xử lý lưu sản phẩm
+    public function store(Request $request)
     {
-        $data = $request->validated();
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('products', 'public');
+        // Validate dữ liệu đầu vào
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'price' => 'required|numeric|min:0',
+            'description' => 'nullable|string',
+            // thêm các field khác nếu có
+        ]);
+
+        // Lấy danh mục tương ứng
+        $category = Category::find($validated['category_id']);
+
+        // Nếu danh mục không tồn tại hoặc đã dừng hoạt động
+        if (!$category || $category->status == 0) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Danh mục này đã dừng hoạt động. Vui lòng chọn danh mục khác!');
         }
-        Product::create($data);
-        return redirect()->route('products.index')->with('success', 'Thêm sản phẩm thành công');
-    }
-    public function edit(Product $product)
-    {
-        $products = Product::query()->where('id', $product->id)->first();
-        $categories = Category::query()->where('status',1)->get();
-        return view('admin.products.edit', compact('product', 'categories'));
+
+        // Tạo sản phẩm
+        Product::create($validated);
+
+        return redirect()->route('products.index')->with('success', 'Thêm sản phẩm thành công!');
     }
 
     public function update(ProductRequest $request, Product $product)

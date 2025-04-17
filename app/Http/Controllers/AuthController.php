@@ -15,19 +15,22 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
             $user = Auth::user();
 
-            // Phân quyền chuyển trang
-            if ($user->role === 'admin') {
-                return redirect('/categories');
-            } elseif ($user->role === 'client') {
-                return redirect('/list');
+            if ($user->role == 'admin') {
+                // $request->session()->put('admin', true);
+            return redirect()->intended('/categories');
+
             }
+
+            return redirect()->intended('/list');
+
         }
 
         return back()->withErrors([
-            'email' => 'Email hoặc mật khẩu không đúng.',
-        ])->withInput();
+            'password' => 'Thông tin đăng nhập không chính xác.',
+        ])->withInput($request->except('password'));
     }
 
     // Xử lý đăng ký

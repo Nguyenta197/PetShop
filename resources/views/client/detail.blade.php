@@ -11,7 +11,17 @@
             <h4 class="text-success mb-3">{{ number_format($product->price) }} VND</h4>
             <p>{{ $product->description }}</p>
 
-            <button class="btn btn-success mt-3">Thêm vào giỏ hàng</button>
+            <!-- Form Thêm vào giỏ hàng -->
+            <form action="{{ route('client.cart.add', $product->id) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-success mt-3">Thêm vào giỏ hàng</button>
+            </form>
+
+            <!-- Form Mua ngay -->
+            <form action="{{ route('client.cart.buyNow', $product->id) }}" method="POST" class="mt-3">
+                @csrf
+                <button type="submit" class="btn btn-primary">Mua ngay</button>
+            </form>
         </div>
     </div>
 

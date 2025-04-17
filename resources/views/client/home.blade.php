@@ -5,7 +5,7 @@
     <h2 class="my-4">Danh sách thú cưng</h2>
 
     {{-- Form tìm kiếm và lọc --}}
-    <form method="GET" action="{{ route('client.products.home') }}" class="row mb-4">
+    <form method="GET" action="{{ route('home') }}" class="row mb-4">
         <div class="col-md-4 mb-2">
             <input type="text" name="keyword" class="form-control" placeholder="Tìm theo tên"
                    value="{{ request('keyword') }}">
